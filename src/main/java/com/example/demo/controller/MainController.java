@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -15,6 +16,8 @@ import java.util.List;
 public class MainController {
     @Autowired
     SomeService service;
+
+
 
     @GetMapping("{id}")
     public Product oneProduct(@PathVariable String id) {
@@ -30,6 +33,7 @@ public class MainController {
 
     }
 
+
     @GetMapping
     public List<Product> allProduct(){
         return service.getAllProduct();
@@ -37,15 +41,17 @@ public class MainController {
 
     @PostMapping
     public Product createProduct(@RequestBody Product product){
-        service.setId(product);
+        service.generateAndSetId(product);
+        service.getAllProduct().add(product);
         return product;
     }
 
     @PutMapping("{id}")
     public Product update(@PathVariable String id,@RequestBody Product product){
-        Product someProduct= getProduct(id);
-        someProduct=new Product(Integer.parseInt(id),product);
-        return someProduct;
+        product.setId(Integer.parseInt(id));
+        Product oldProduct=getProduct(id);
+        service.getAllProduct().set(service.getAllProduct().indexOf(oldProduct), product);
+        return product;
     }
 
     @DeleteMapping("{id}")
@@ -54,10 +60,12 @@ public class MainController {
         service.getAllProduct().remove(product);
     }
 
+
+    
     @GetMapping("add")
     public RedirectView addProduct(@RequestParam(name = "name") String name, @RequestParam(name = "price") String price){
         Product product=new Product(name, Integer.parseInt(price));
-        service.setId(product);
+        service.generateAndSetId(product);
         product.setStatus(ProductStatus.In_order);
         service.getAllProduct().add(product);
         return new RedirectView("/product");
