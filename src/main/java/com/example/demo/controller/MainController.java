@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.database.JDBC;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.ProductStatus;
 import com.example.demo.service.SomeService;
@@ -16,7 +17,8 @@ import java.util.List;
 public class MainController {
     @Autowired
     SomeService service;
-
+    @Autowired
+    JDBC database;
 
 
     @GetMapping("{id}")
@@ -30,7 +32,6 @@ public class MainController {
                 .filter(product -> product.getId() == Integer.parseInt(id))
                 .findFirst()
                 .orElseThrow(NotFoundException::new);
-
     }
 
 
@@ -41,13 +42,16 @@ public class MainController {
 
     @PostMapping
     public Product createProduct(@RequestBody Product product){
+        database.addPurchase(product);
         service.generateAndSetId(product);
         service.getAllProduct().add(product);
+
         return product;
     }
 
     @PutMapping("{id}")
     public Product update(@PathVariable String id,@RequestBody Product product){
+        database.updatePurchase(id,product);
         product.setId(Integer.parseInt(id));
         Product oldProduct=getProduct(id);
         service.getAllProduct().set(service.getAllProduct().indexOf(oldProduct), product);
@@ -58,6 +62,7 @@ public class MainController {
     public void delete(@PathVariable String id){
         Product product=getProduct(id);
         service.getAllProduct().remove(product);
+        database.removePurchase(id);
     }
 
 

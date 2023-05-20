@@ -18,11 +18,13 @@ public class Product {
     @Column(name = "status")
     ProductStatus status;
 
-    public Product(int id, String name, Integer price) {
+
+
+    public Product(int id, String name, Integer price,String status) {
         this.id = id;
         this.name=name;
         this.price=price;
-        status=ProductStatus.In_order;
+        this.status=ProductStatus.valueOf(status);
     }
 
     public Product(){};
@@ -41,6 +43,10 @@ public class Product {
 
     public ProductStatus getStatus() {
         return status;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setPrice(Integer price) {

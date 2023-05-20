@@ -29,7 +29,7 @@ Vue.component('product-form',{
             this.id=value.id;
         }
     },
-    template: '<div>'+
+    template: '<div id="redactLine">'+
                 '<h4>Name: '+
                 '<input type="text" v-model="name"/>'+
                 ' Price: '+
@@ -70,7 +70,7 @@ Vue.component('product-form',{
 Vue.component('product-view',{
     props: ['product', 'editMethod', 'products'],
     template:
-        '<div>'+
+        '<div id="productLine">'+
             '{{product.id}}) {{product.name}}  price: {{product.price.toString()}} status:  {{product.status}} '+
             '<input type="button" value="Edit" v-on:click="edit"> '+
             '<input type="button" value="X" v-on:click="del"> '+
@@ -100,7 +100,7 @@ Vue.component('products-list', {
         }
     },
     template:
-        '<div>' +
+        '<div id="main">' +
             '<product-form :products="products" :productToForm="product"/>'+
             '<product-view v-for="product in products" :key="product.id" :product="product" :editMethod="methodToEdit"' +
                 ':products="products"/>' +
